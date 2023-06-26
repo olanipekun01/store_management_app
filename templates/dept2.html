@@ -1,0 +1,122 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <link href="{% static './css/dept1.css' %}" rel="stylesheet">
+
+</head>
+
+<body>
+    <header>
+        <h1>Store Management App</h1>
+    </header>
+    <main>
+        <!-- <section class="side_nav">
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">dept 1</a></li>
+                <li><a href="#">dept 2</a></li>
+                <li><a href="#">dept 3</a></li>
+                <li><a href="#">dept 4</a></li>
+            </ul>
+        </section> -->
+
+        <section class="hero">
+
+
+            <div class="dept_nav">
+                <a href="/"><span>Home</span></a>
+                <a href="/micro"><span>Micro</span></a>
+                <a href="/haem"><span class="active">Haem</span></a>
+                <a href="/chem"><span>Chem path</span></a>
+                <a href="/histo"><span>Histo</span></a>
+            </div>
+
+            <div class="card_wrapper">
+                {% for message in messages %}
+                <h5 style="color: red;">{{message}}</h5>
+                {% endfor %}
+                <div class="header_div">
+                    <h3>items</h3>
+                    <div class="wrapper">
+                        <button onclick="handleNewStock()">+ New Stock</button>
+                        <a href="history/2"><img src="{% static './assets/Calendar.svg'%}" alt=""></a>
+                    
+                    </div>
+                </div>
+
+                <div class="items_wrapper">
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Item name</th>
+                                <th>Amount in store</th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for item in items %}
+
+                            {% if item.dept.dept_name == "haem" %}
+                                <tr>
+                                    <td><a class="name" href="itemHistory/2/{{item.slug}}">{{item.item_name}}</a></td>
+                                    <td>{{item.amount}}</td>
+                                    <td><button onclick="showModal('{{item.item_name}}')">add/subtract</button></td>
+                                    <td class="remove"><a href="/delete/{{ item.slug }}"><img src="{% static './assets/deleteIcon.svg' %}" alt=""></a></td>
+                                </tr>
+                            {% endif %}
+                            {% endfor %}
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <Span>Forklift &copy2023</Span>
+    </footer>
+
+    <div class="background_wrapper">
+
+    </div>
+
+    <div class="modal_container">
+        <form method="post" action="{% url 'store:haem' %}">
+            {% csrf_token %}
+            <input id="modalNameInput" type="text" name="input_name" value="Paracetamol">
+            <input type="number" name="input_amount" placeholder="amount">
+            <select name="op_type" id="">
+                <option value="add">add</option>
+                <option value="subtract">subtract</option>
+            </select>
+            <button>submit</button>
+        </form>
+        <button id="cancelBtn" class="cancel_btn" onclick="closeModal()">cancel</button>
+    </div>
+
+    <div class="new_stock">
+        <form method="post" action="{% url 'store:newstock' %}">
+            {% csrf_token %}
+            <input id="modalNameInput" type="text" name="item_name" placeholder="Item name">
+            <input type="number" name="item_amount" placeholder="amount">
+            <select name="dept" id="">
+                <option value="haem">haem</option>
+            </select>
+            <button>submit</button>
+        </form>
+        <button id="cancelNewStock" class="cancel_btn" onclick="closeNewStockModal()">cancel</button>
+    </div>
+    <script src="{% static './js/dept1.js' %}"></script>
+</body>
+
+</html>
