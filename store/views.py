@@ -61,8 +61,12 @@ def micro(request):
             else:
                 messages.info(request, 'enter a valid amount')
                 return redirect('/micro');
-    items = Items.objects.all()
-    return render(request, 'dept1.html', {'items': items})
+    sess = SessionUser.objects.all()[0]
+    if sess.username == 'micro' or sess.username == 'admin':
+        items = Items.objects.all()
+        return render(request, 'dept1.html', {'items': items})
+    else:
+         return redirect('/'+ sess.username)
 
 
 @login_required
@@ -108,9 +112,12 @@ def haem(request):
             else:
                 messages.info(request, 'enter a valid amount')
                 return redirect('/haem');
-    items = Items.objects.all()
-    return render(request, 'dept2.html', {'items': items})
-
+    sess = SessionUser.objects.all()[0]
+    if sess.username == 'haem' or sess.username == 'admin':
+        items = Items.objects.all()
+        return render(request, 'dept2.html', {'items': items})
+    else:
+         return redirect('/'+ sess.username)
 
 @login_required
 def chem(request):
@@ -155,8 +162,13 @@ def chem(request):
             else:
                 messages.info(request, 'enter a valid amount')
                 return redirect('/chem');
-    items = Items.objects.all()
-    return render(request, 'dept3.html', {'items': items})
+    sess = SessionUser.objects.all()[0]
+    print('user', request.user)
+    if sess.username == 'chem' or sess.username == 'admin':
+        items = Items.objects.all()
+        return render(request, 'dept3.html', {'items': items})
+    else:
+         return redirect('/'+ sess.username)
 
 
 @login_required
@@ -202,9 +214,12 @@ def histo(request):
             else:
                 messages.info(request, 'enter a valid amount')
                 return redirect('/histo');
-    items = Items.objects.all()
-    return render(request, 'dept4.html', {'items': items})
-
+    sess = SessionUser.objects.all()[0]
+    if sess.username == 'histo' or sess.username == 'admin':
+        items = Items.objects.all()
+        return render(request, 'dept4.html', {'items': items})
+    else:
+         return redirect('/'+ sess.username)
 
 @login_required
 def newstock(request):
@@ -284,13 +299,16 @@ def ItemHistory(request, pk, slug):
 
 def login(request):
      if request.method  == 'POST':
-        email = request.POST['email']
+        username = request.POST['username']
         password = request.POST['password']
         
-        user = auth.authenticate(username=email, password=password)
+        user = auth.authenticate(username=username, password=password)
         
         if user is not None:
             auth.login(request, user)
+            sess = SessionUser.objects.all().filter(username="none")[0]
+            sess.username = username
+            sess.save()
             return redirect('/')
         else:
             messages.info(request, 'Credetials Invalid')
@@ -300,5 +318,8 @@ def login(request):
 
 @login_required    
 def logout(request):
+    sess = SessionUser.objects.all()[0]
+    sess.username = "none"
+    sess.save()
     auth.logout(request)
     return redirect('/')

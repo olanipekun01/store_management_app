@@ -45,6 +45,9 @@ class HistoHistory(models.Model):
                                         on_delete=models.SET_NULL, null=True, blank=True)
     slug = models.SlugField(max_length=2000, null=True, blank=True)
     
+class SessionUser(models.Model):
+    username = models.CharField(max_length = 500)
+    
 
 class Items(models.Model):
     item_id = models.IntegerField()
@@ -61,3 +64,15 @@ def pre_save_receiver(sender, instance, *args, **kwargs):
        
 
 
+
+# class Section(models.Model):
+
+#     DEPT = ("MH", "microhistory",
+#             "HM", 'heamhistory')
+
+#     department_section = models.CharField(choices=DEPT, max_length=10)
+#     date_created = models.DateTimeField(auto_now=True)
+#     item_name = models.CharField(max_length = 500)
+#     amount = models.CharField(max_length = 500)
+#     bal = models.CharField(max_length = 500, null=True, blank=True)
+#     dept = models.ForeignKey(Department, related_name="micro_history_category",
